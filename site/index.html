@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Love Workshop — Tim and Ari</title>
+<meta name="description" content="Love Workshop — the album by Tim and Ari (LoBo_301). Stream every track right here.">
+<meta property="og:title" content="Love Workshop — Tim and Ari">
+<meta property="og:description" content="Stream the album Love Workshop by Tim and Ari (LoBo_301).">
+<meta property="og:image" content="/cover.jpg">
+<meta property="og:type" content="music.album">
+<link rel="icon" href="/icon.png">
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#e4f2e6;
+    --cream:#f5f7ef;
+    --peach:#e9cdb4;
+    --ink:#5d5570;
+    --ink-soft:#8b7f9e;
+    --sage:#9dbfae;
+    --card:#ffffffcc;
+    --accent:#7a6e93;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Space Grotesk",system-ui,-apple-system,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 90% at 80% 100%, var(--peach) 0%, transparent 55%),
+      radial-gradient(110% 80% at 10% 0%, var(--cream) 0%, transparent 60%),
+      linear-gradient(160deg, var(--cream) 0%, var(--mint) 55%, #ead8c2 100%);
+    min-height:100vh;
+    padding-bottom:120px;
+  }
+  /* grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* echo wall text like the cover */
+  .echo{
+    position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+    display:flex;flex-direction:column;justify-content:space-between;
+    font-family:"Monoton",cursive;font-size:clamp(48px,9vw,110px);
+    line-height:1.35;white-space:nowrap;color:var(--sage);
+    -webkit-text-stroke:1px var(--sage);
+  }
+  .echo span{opacity:.10;letter-spacing:.04em}
+  .echo span:nth-child(2n){opacity:.06;margin-left:-6vw}
+  main{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:48px 24px 0}
+  header{margin-bottom:36px}
+  .kicker{letter-spacing:.35em;text-transform:uppercase;font-size:12px;color:var(--ink-soft);margin-bottom:10px}
+  h1{
+    font-family:"Monoton",cursive;font-weight:400;
+    font-size:clamp(34px,6.5vw,72px);
+    color:var(--accent);letter-spacing:.02em;line-height:1.1;
+    text-shadow:0 1px 0 #fff8;
+  }
+  .byline{margin-top:12px;font-size:17px;color:var(--ink-soft)}
+  .byline a{color:var(--accent);text-decoration:none;border-bottom:1px solid #7a6e9355}
+  .byline a:hover{border-bottom-color:var(--accent)}
+
+  .album{
+    display:grid;grid-template-columns:minmax(280px,420px) 1fr;gap:36px;align-items:start;
+  }
+  .cover-wrap{position:sticky;top:32px}
+  .cover{
+    width:100%;border-radius:14px;display:block;
+    box-shadow:0 30px 60px -20px #5d557045, 0 8px 20px -8px #5d557040;
+  }
+  .cover-actions{display:flex;gap:12px;margin-top:18px}
+  .btn-primary{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--accent);color:#fdfcf8;border:none;border-radius:999px;
+    padding:15px 22px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;
+    letter-spacing:.02em;box-shadow:0 10px 24px -8px #7a6e9380;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 28px -8px #7a6e9390}
+  .btn-primary:active{transform:translateY(0)}
+
+  .tracks{background:var(--card);backdrop-filter:blur(8px);border:1px solid #ffffff90;border-radius:18px;padding:10px;box-shadow:0 20px 50px -30px #5d557050}
+  .track{
+    display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:14px;
+    padding:14px 16px;border-radius:12px;cursor:pointer;border:none;background:transparent;
+    width:100%;text-align:left;font-family:inherit;color:inherit;font-size:16px;
+    transition:background .15s ease;
+  }
+  .track:hover{background:#ffffffb0}
+  .track.active{background:#7a6e9316}
+  .track .num{color:var(--ink-soft);font-variant-numeric:tabular-nums;font-size:14px}
+  .track .title{font-weight:500;letter-spacing:.01em}
+  .track .sub{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px;letter-spacing:.06em}
+  .track .dur{color:var(--ink-soft);font-variant-numeric:tabular-nums;font-size:14px}
+  .track.active .title{color:var(--accent)}
+  /* equalizer bars for playing track */
+  .eq{display:none;align-items:flex-end;gap:2.5px;height:14px}
+  .eq i{width:3px;background:var(--accent);border-radius:2px;animation:eq 1s ease-in-out infinite}
+  .eq i:nth-child(2){animation-delay:.25s}.eq i:nth-child(3){animation-delay:.5s}
+  @keyframes eq{0%,100%{height:4px}50%{height:14px}}
+  .track.playing .eq{display:flex}
+  .track.playing .num{display:none}
+
+  .links{margin:56px 0 40px}
+  .links h2{font-size:13px;letter-spacing:.35em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:18px}
+  .pills{display:flex;flex-wrap:wrap;gap:12px}
+  .pill{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:11px 20px;border-radius:999px;text-decoration:none;
+    background:#ffffffd0;border:1px solid #ffffff;color:var(--ink);
+    font-size:15px;font-weight:500;box-shadow:0 8px 20px -12px #5d557060;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .pill:hover{transform:translateY(-2px);background:#fff}
+  .pill svg{width:18px;height:18px;fill:var(--accent)}
+
+  footer{position:relative;z-index:1;text-align:center;color:var(--ink-soft);font-size:13px;padding:24px;letter-spacing:.05em}
+
+  /* player bar */
+  .player{
+    position:fixed;left:0;right:0;bottom:0;z-index:5;
+    background:#fbfaf5ee;backdrop-filter:blur(14px);
+    border-top:1px solid #ffffff;box-shadow:0 -12px 40px -20px #5d557060;
+    transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.9,.25,1);
+  }
+  .player.visible{transform:translateY(0)}
+  .player-inner{max-width:1060px;margin:0 auto;padding:12px 24px 16px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+  .p-art{width:52px;height:52px;border-radius:8px;object-fit:cover;box-shadow:0 6px 16px -6px #5d557060}
+  .p-main{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .p-top{display:flex;align-items:center;gap:16px;min-width:0}
+  .p-title{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+  .p-controls{display:flex;align-items:center;gap:6px}
+  .pbtn{background:none;border:none;cursor:pointer;padding:8px;border-radius:50%;display:flex;color:var(--ink);transition:background .15s}
+  .pbtn:hover{background:#7a6e9315}
+  .pbtn svg{width:20px;height:20px;fill:currentColor}
+  .pbtn.play-main{background:var(--accent);color:#fdfcf8;padding:11px;box-shadow:0 6px 16px -6px #7a6e93a0}
+  .pbtn.play-main:hover{background:#6a5f82}
+  .p-seek{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .bar{flex:1;height:16px;display:flex;align-items:center;cursor:pointer}
+  .bar-track{position:relative;width:100%;height:4px;border-radius:99px;background:#7a6e9325;overflow:visible}
+  .bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--accent);width:0%}
+  .bar-fill::after{content:"";position:absolute;right:-6px;top:50%;transform:translate(0,-50%);width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 2px 6px #5d557060;opacity:0;transition:opacity .15s}
+  .bar:hover .bar-fill::after{opacity:1}
+
+  @media (max-width:760px){
+    .album{grid-template-columns:1fr}
+    .cover-wrap{position:static;max-width:420px;margin:0 auto}
+    main{padding-top:36px}
+    .player-inner{padding:10px 16px 14px}
+    .p-title{font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="echo" aria-hidden="true">
+  <span>LOVE WORKSHOP TIM AND ARI</span>
+  <span>LOVE WORKSHOP TIM AND ARI</span>
+  <span>LOVE WORKSHOP TIM AND ARI</span>
+  <span>LOVE WORKSHOP TIM AND ARI</span>
+  <span>LOVE WORKSHOP TIM AND ARI</span>
+</div>
+
+<main>
+  <header>
+    <p class="kicker">The Album</p>
+    <h1>Love Workshop</h1>
+    <p class="byline">by Tim and Ari &middot; <a href="https://x.com/LoBo_301" target="_blank" rel="noopener">LoBo_301</a></p>
+  </header>
+
+  <section class="album">
+    <div class="cover-wrap">
+      <img class="cover" src="/cover.jpg" alt="Love Workshop album cover — Tim and Ari">
+      <div class="cover-actions">
+        <button class="btn-primary" id="playAll">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span>Play Album</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="tracks" id="tracklist" role="list"></div>
+  </section>
+
+  <section class="links">
+    <h2>Find LoBo_301 Everywhere</h2>
+    <div class="pills">
+      <a class="pill" href="https://open.spotify.com/artist/64QvY6PhgytDCEZiEeDbLC" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.5 17.3a.75.75 0 0 1-1.03.25c-2.82-1.72-6.37-2.11-10.55-1.16a.75.75 0 1 1-.33-1.46c4.57-1.05 8.5-.6 11.66 1.34.35.22.46.68.25 1.03zm1.47-3.27a.94.94 0 0 1-1.29.31c-3.23-1.98-8.15-2.56-11.97-1.4a.94.94 0 1 1-.54-1.8c4.36-1.32 9.79-.68 13.49 1.6.44.27.58.85.31 1.29zm.13-3.4C15.24 8.33 8.88 8.12 5.19 9.24a1.13 1.13 0 1 1-.65-2.16c4.24-1.28 11.28-1.03 15.72 1.6a1.13 1.13 0 0 1-1.16 1.94z"/></svg>Spotify</a>
+      <a class="pill" href="https://music.apple.com/us/artist/lobo-301/1425532097" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.99 6.12c0-.74-.06-1.47-.22-2.19a4.4 4.4 0 0 0-1.17-2.06 4.35 4.35 0 0 0-2.06-1.16A9.6 9.6 0 0 0 18.36.5C17.62.44 17.4.44 17.16.44H6.85c-.25 0-.5 0-.75.03-.62.03-1.24.09-1.84.26A4.35 4.35 0 0 0 1.4 2.5 4.4 4.4 0 0 0 .5 4.33C.34 4.93.28 5.55.25 6.17c-.02.25-.02.5-.03.75v10.16c0 .25.01.5.03.75.03.62.09 1.24.25 1.84.2.78.6 1.43 1.17 2.01.57.58 1.23.97 2.01 1.18.6.16 1.22.22 1.84.25.25.02.5.02.75.03h10.31c.25-.01.5-.01.75-.03.62-.03 1.24-.09 1.85-.25a4.35 4.35 0 0 0 2.05-1.18 4.4 4.4 0 0 0 1.17-2.05c.16-.61.22-1.23.25-1.85.02-.25.02-.5.03-.75V6.87c0-.25 0-.5-.02-.75zm-6.42 3.1v6.85c0 .5-.07.99-.33 1.43a2.4 2.4 0 0 1-1.55 1.16c-.32.08-.65.13-.98.14-.87.04-1.62-.55-1.8-1.4a1.7 1.7 0 0 1 1.26-2c.4-.11.82-.19 1.22-.29.3-.07.5-.25.55-.56a1.7 1.7 0 0 0 .02-.29V9.32c0-.32-.14-.4-.44-.35l-4.32.87c-.36.08-.47.2-.47.58v7.65c0 .5-.06.98-.3 1.42a2.4 2.4 0 0 1-1.6 1.23c-.32.08-.65.13-.98.14a1.8 1.8 0 0 1-1.83-1.42 1.7 1.7 0 0 1 1.24-1.98c.4-.12.82-.19 1.23-.3.33-.08.51-.28.54-.62V7.7c0-.13.02-.26.05-.38.07-.3.29-.48.58-.55.28-.07.56-.12.84-.18l2.9-.58 2.56-.52c.28-.05.55-.12.83-.14.4-.03.66.22.7.62.02.14.02.28.02.42.01 1.28 0 2.55.01 3.83z"/></svg>Apple Music</a>
+      <a class="pill" href="https://soundcloud.com/lobo301" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M1.17 12.66c-.06 0-.1.05-.11.11l-.25 1.9.25 1.86c.01.07.05.12.11.12s.1-.05.11-.11l.29-1.87-.29-1.9c-.01-.07-.05-.11-.11-.11zm1.49-1.06c-.07 0-.12.05-.13.12l-.32 2.95.32 2.85c.01.07.06.12.13.12.06 0 .11-.05.12-.12l.37-2.85-.37-2.95c-.01-.07-.06-.12-.12-.12zm1.55-.31c-.08 0-.14.06-.15.14l-.3 3.24.3 3.12c.01.08.07.14.15.14.07 0 .13-.06.14-.14l.34-3.12-.34-3.24c-.01-.08-.07-.14-.14-.14zm1.56-.15c-.09 0-.16.07-.17.16l-.28 3.38.28 3.25c.01.09.08.16.17.16s.16-.07.17-.16l.32-3.25-.32-3.38a.17.17 0 0 0-.17-.16zm1.58-.71c-.1 0-.18.08-.19.18l-.26 4.1.26 3.28c.01.1.09.18.19.18.1 0 .18-.08.19-.18l.3-3.28-.3-4.1c-.01-.1-.09-.18-.19-.18zm1.6-1.19c-.11 0-.2.09-.21.2l-.24 5.28.24 3.26c.01.11.1.2.21.2s.2-.09.21-.2l.27-3.26-.27-5.28c-.01-.11-.1-.2-.21-.2zm1.62-.87c-.12 0-.22.1-.23.22l-.22 6.13.22 3.23c.01.12.11.22.23.22s.22-.1.23-.22l.25-3.23-.25-6.13c-.01-.12-.11-.22-.23-.22zm1.65-.6a.25.25 0 0 0-.25.24l-.2 6.71.2 3.19c0 .13.11.24.25.24.13 0 .24-.11.25-.24l.23-3.19-.23-6.71a.25.25 0 0 0-.25-.24zm2.61.24a.27.27 0 0 0-.27.26l-.18 6.45.18 3.16c0 .15.12.26.27.26a.27.27 0 0 0 .27-.26l.2-3.16-.2-6.45a.27.27 0 0 0-.27-.26zm-1.3-.9a.26.26 0 0 0-.26.25l-.19 7.36.19 3.18c0 .14.12.25.26.25.14 0 .25-.11.26-.25l.21-3.18-.21-7.36a.26.26 0 0 0-.26-.25zm3.94 2.03c-.36 0-.7.07-1.02.2a6.03 6.03 0 0 0-6-5.61c-.44 0-.87.05-1.28.14-.16.04-.2.08-.2.17v11.03c0 .09.07.17.16.18h11.55a2.94 2.94 0 0 0 0-5.88c-.42 0-.82.09-1.18.25a2.63 2.63 0 0 0-2.03-.48z" transform="scale(0.95)"/></svg>SoundCloud</a>
+      <a class="pill" href="https://lobo301.bandcamp.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M0 18.75l7.44-13.5H24l-7.44 13.5H0z"/></svg>Bandcamp</a>
+      <a class="pill" href="https://youtu.be/v7ZMKXh3a2I" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg>YouTube</a>
+      <a class="pill" href="https://x.com/LoBo_301" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82L5 21.75H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64z"/></svg>X / Twitter</a>
+      <a class="pill" href="https://twitch.tv/lobo_301eth" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4.27 0L.75 3.52v16.96h5.98V24l3.52-3.52h2.82L19.5 14V0H4.27zm13.82 13.3l-2.82 2.82h-2.82l-2.46 2.46v-2.46H6.75V1.4h11.34v11.9zM15.98 4.23h-1.4v4.22h1.4V4.23zm-3.87 0h-1.41v4.22h1.41V4.23z"/></svg>Twitch</a>
+      <a class="pill" href="https://linktr.ee/LoBo_301" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7.95 6.93L4.4 3.5 6.6 1.36l3.4 3.5V0h3.9v4.87l3.4-3.5 2.2 2.13-3.55 3.43h4.9v3.05h-4.93l3.57 3.46-2.2 2.1L12 10.24l-5.3 5.3-2.2-2.1 3.58-3.46H3.15V6.93h4.8zM10.1 13.9h3.9V24h-3.9V13.9z"/></svg>Linktree</a>
+    </div>
+  </section>
+</main>
+
+<div class="player" id="player">
+  <div class="player-inner">
+    <img class="p-art" src="/cover.jpg" alt="">
+    <div class="p-main">
+      <div class="p-top">
+        <div class="p-title" id="pTitle">—</div>
+        <div class="p-controls">
+          <button class="pbtn" id="prevBtn" aria-label="Previous track"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+          <button class="pbtn play-main" id="playBtn" aria-label="Play or pause">
+            <svg viewBox="0 0 24 24" id="iconPlay"><path d="M8 5v14l11-7z"/></svg>
+            <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+          </button>
+          <button class="pbtn" id="nextBtn" aria-label="Next track"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+        </div>
+      </div>
+      <div class="p-seek">
+        <span id="tCur">0:00</span>
+        <div class="bar" id="seekBar"><div class="bar-track"><div class="bar-fill" id="seekFill"></div></div></div>
+        <span id="tDur">0:00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>Love Workshop &copy; 2026 Tim and Ari / LoBo_301 &middot; All rights reserved</footer>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+const TRACKS = [
+  { title:"Love Workshop (Intro)", sub:"Intro", file:"love-workshop-intro", dur:79 },
+  { title:"She A Dime", file:"she-a-dime", dur:259 },
+  { title:"Undercover Lover", file:"undercover-lover", dur:197 },
+  { title:"Phone", file:"phone", dur:230 },
+  { title:"Cook So Well (Interlude)", sub:"Interlude", file:"cook-so-well-interlude", dur:130 },
+  { title:"Barely Lovin (Thought It Was)", file:"barely-lovin-thought-it-was", dur:238 },
+  { title:"All's Fair", file:"alls-fair", dur:278 },
+  { title:"Broken Record", file:"broken-record", dur:256 },
+  { title:"Miss You Anymore", file:"miss-you-anymore", dur:221 },
+];
+
+const audio = document.getElementById("audio");
+const list = document.getElementById("tracklist");
+const player = document.getElementById("player");
+const pTitle = document.getElementById("pTitle");
+const playBtn = document.getElementById("playBtn");
+const iconPlay = document.getElementById("iconPlay");
+const iconPause = document.getElementById("iconPause");
+const seekBar = document.getElementById("seekBar");
+const seekFill = document.getElementById("seekFill");
+const tCur = document.getElementById("tCur");
+const tDur = document.getElementById("tDur");
+let current = -1;
+
+const fmt = s => { s = Math.max(0, Math.floor(s||0)); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); };
+
+TRACKS.forEach((t,i)=>{
+  const b = document.createElement("button");
+  b.className = "track"; b.setAttribute("role","listitem");
+  b.innerHTML = `<span class="num">${i+1}</span>
+    <span class="eq"><i></i><i></i><i></i></span>
+    <span><span class="title">${t.title}</span>${t.sub?`<span class="sub">${t.sub.toUpperCase()}</span>`:""}</span>
+    <span class="dur">${fmt(t.dur)}</span>`;
+  b.addEventListener("click", ()=> (i===current ? toggle() : load(i,true)));
+  list.appendChild(b);
+});
+const rows = [...list.children];
+
+function load(i, autoplay){
+  current = i;
+  const t = TRACKS[i];
+  audio.src = `/audio/${t.file}.m4a`;
+  pTitle.textContent = `${i+1}. ${t.title} — Tim and Ari`;
+  tDur.textContent = fmt(t.dur);
+  rows.forEach((r,j)=>{ r.classList.toggle("active", j===i); r.classList.remove("playing"); });
+  player.classList.add("visible");
+  if(autoplay) audio.play();
+  if("mediaSession" in navigator){
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title:t.title, artist:"Tim and Ari (LoBo_301)", album:"Love Workshop",
+      artwork:[{src:"/cover.jpg", sizes:"1400x1400", type:"image/jpeg"}]
+    });
+  }
+}
+function toggle(){ if(current<0) load(0,true); else audio.paused ? audio.play() : audio.pause(); }
+
+playBtn.addEventListener("click", toggle);
+document.getElementById("playAll").addEventListener("click", ()=> load(0,true));
+document.getElementById("nextBtn").addEventListener("click", ()=> load((current+1)%TRACKS.length,true));
+document.getElementById("prevBtn").addEventListener("click", ()=>{
+  if(audio.currentTime>3) audio.currentTime=0;
+  else load((current-1+TRACKS.length)%TRACKS.length,true);
+});
+audio.addEventListener("ended", ()=>{ if(current<TRACKS.length-1) load(current+1,true); else setPlaying(false); });
+audio.addEventListener("play", ()=> setPlaying(true));
+audio.addEventListener("pause", ()=> setPlaying(false));
+audio.addEventListener("timeupdate", ()=>{
+  tCur.textContent = fmt(audio.currentTime);
+  if(audio.duration) seekFill.style.width = (audio.currentTime/audio.duration*100)+"%";
+});
+audio.addEventListener("loadedmetadata", ()=> tDur.textContent = fmt(audio.duration));
+
+function setPlaying(on){
+  iconPlay.style.display = on ? "none" : "";
+  iconPause.style.display = on ? "" : "none";
+  if(current>=0) rows[current].classList.toggle("playing", on);
+}
+
+function seekFromEvent(e){
+  const rect = seekBar.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const pct = Math.min(1, Math.max(0, x/rect.width));
+  if(audio.duration) audio.currentTime = pct*audio.duration;
+}
+let dragging = false;
+seekBar.addEventListener("pointerdown", e=>{ dragging=true; seekBar.setPointerCapture(e.pointerId); seekFromEvent(e); });
+seekBar.addEventListener("pointermove", e=>{ if(dragging) seekFromEvent(e); });
+seekBar.addEventListener("pointerup", ()=> dragging=false);
+
+document.addEventListener("keydown", e=>{
+  if(e.code==="Space" && !["INPUT","TEXTAREA","BUTTON"].includes(document.activeElement.tagName)){
+    e.preventDefault(); toggle();
+  }
+});
+if("mediaSession" in navigator){
+  navigator.mediaSession.setActionHandler("previoustrack", ()=> document.getElementById("prevBtn").click());
+  navigator.mediaSession.setActionHandler("nexttrack", ()=> document.getElementById("nextBtn").click());
+}
+</script>
+</body>
+</html>
