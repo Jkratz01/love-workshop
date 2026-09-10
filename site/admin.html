@@ -28,22 +28,28 @@
   }
   .wrap{max-width:960px;margin:0 auto}
   h1{font-family:"Monoton",cursive;font-weight:400;font-size:clamp(24px,4.5vw,40px);color:var(--accent);margin-bottom:4px}
-  .sub{color:var(--ink-soft);font-size:14px;margin-bottom:28px}
+  .sub{color:var(--ink-soft);font-size:14px;margin-bottom:22px}
   .card{background:var(--card);border:1px solid #eceadf;border-radius:16px;padding:22px 24px;box-shadow:0 14px 34px -24px #3f205440;margin-bottom:20px}
   h2{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:16px}
 
   /* key gate */
   #gate{max-width:420px;margin:80px auto;text-align:center}
-  #gate input{
-    width:100%;padding:13px 16px;border:1.5px solid #d8d2e2;border-radius:12px;
-    font-family:inherit;font-size:15px;margin:14px 0;outline:none;
-  }
+  #gate input{width:100%;padding:13px 16px;border:1.5px solid #d8d2e2;border-radius:12px;font-family:inherit;font-size:15px;margin:14px 0;outline:none}
   #gate input:focus{border-color:var(--accent)}
-  #gate button{
-    width:100%;background:var(--accent);color:#fdfcf8;border:none;border-radius:999px;
-    padding:13px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
-  }
+  #gate button{width:100%;background:var(--accent);color:#fdfcf8;border:none;border-radius:999px;padding:13px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
   #gate .err{color:#a33b3b;font-size:13px;margin-top:10px;display:none}
+
+  /* filters */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;align-items:center}
+  .chip{
+    background:var(--card);border:1.5px solid #d8d2e2;border-radius:999px;padding:8px 16px;
+    font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;
+    transition:all .12s ease;
+  }
+  .chip:hover{border-color:var(--accent)}
+  .chip.sel{background:var(--accent);border-color:var(--accent);color:#fdfcf8}
+  .filters .spacer{flex:1}
+  .meta{font-size:12.5px;color:var(--ink-soft)}
 
   /* stat tiles */
   .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
@@ -53,35 +59,46 @@
   .tile .s{font-size:12px;color:var(--ink-soft);margin-top:4px}
 
   /* horizontal bar rows */
-  .row{display:grid;grid-template-columns:210px 1fr 48px;align-items:center;gap:12px;padding:7px 0;font-size:14px}
+  .row{display:grid;grid-template-columns:210px 1fr 48px;align-items:center;gap:12px;padding:7px 4px;font-size:14px;border-radius:8px;cursor:default}
   .row .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .row .barwrap{height:16px;display:flex;align-items:center}
   .row .bar{height:12px;border-radius:0 4px 4px 0;background:var(--bar);min-width:2px;transition:width .4s ease}
-  .row .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
-  .row:hover{background:#3f205408}
+  .row .val{text-align:right;font-variant-numeric:tabular-nums}
+  .row:hover{background:#3f205410}
+  @media (max-width:560px){.row{grid-template-columns:130px 1fr 42px}}
 
   /* daily columns */
-  .cols{display:flex;align-items:flex-end;gap:6px;height:140px;padding-top:18px}
-  .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
-  .col .stick{width:100%;max-width:34px;background:var(--bar);border-radius:4px 4px 0 0;min-height:2px;transition:height .4s ease}
+  .cols{display:flex;align-items:flex-end;gap:5px;height:150px;padding-top:20px}
+  .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;cursor:default}
+  .col .stick{width:100%;max-width:36px;background:var(--bar);border-radius:4px 4px 0 0;min-height:2px;transition:height .3s ease}
+  .col:hover .stick{background:#5c357e}
   .col .cl{font-size:10.5px;color:var(--ink-soft);white-space:nowrap}
   .col .cv{font-size:11px;color:var(--ink);font-variant-numeric:tabular-nums;height:14px}
-  @media (max-width:700px){.col:nth-child(even) .cl{visibility:hidden}}
+  @media (max-width:700px){.cols.dense .col:nth-child(even) .cl{visibility:hidden}}
   details{margin-top:14px;font-size:13px;color:var(--ink-soft)}
   table{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
   th,td{text-align:right;padding:4px 10px;border-bottom:1px solid #eee9f2;font-variant-numeric:tabular-nums}
   th:first-child,td:first-child{text-align:left}
   th{color:var(--ink-soft);font-weight:500}
 
-  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
-  .toolbar .meta{font-size:13px;color:var(--ink-soft)}
-  .toolbar button{
-    background:var(--card);border:1px solid #d8d2e2;border-radius:999px;padding:9px 18px;
-    font-family:inherit;font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;
-  }
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .toolbar button{background:var(--card);border:1px solid #d8d2e2;border-radius:999px;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:700;color:var(--accent);cursor:pointer}
   .toolbar button:hover{border-color:var(--accent)}
   #dash{display:none}
   .empty{color:var(--ink-soft);font-size:14px;padding:6px 0}
+
+  /* rich tooltip */
+  #tip{
+    position:fixed;z-index:50;display:none;pointer-events:none;
+    background:#2c2138f2;color:#f4f0fa;border-radius:12px;padding:12px 14px;
+    font-size:12.5px;line-height:1.55;max-width:260px;
+    box-shadow:0 16px 40px -12px #16102490;
+  }
+  #tip .t-head{font-weight:700;font-size:13px;margin-bottom:4px}
+  #tip .t-sub{color:#c9bedd;margin-bottom:6px}
+  #tip .t-line{display:flex;justify-content:space-between;gap:16px}
+  #tip .t-line b{font-variant-numeric:tabular-nums;font-weight:700}
+  #tip .t-sec{margin-top:7px;padding-top:7px;border-top:1px solid #ffffff22;color:#c9bedd;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -98,10 +115,7 @@
     <h1>Love Workshop</h1>
     <p class="sub">Site &amp; listening stats · tracked since Sep 10, 2026</p>
 
-    <div class="toolbar">
-      <span class="meta" id="updated"></span>
-      <button id="refresh">Refresh</button>
-    </div>
+    <div class="filters" id="ranges"></div>
 
     <div class="tiles">
       <div class="tile"><div class="n" id="tVisits">–</div><div class="l">Visits</div></div>
@@ -111,12 +125,15 @@
     </div>
 
     <div class="card">
-      <h2>Plays by track</h2>
-      <div id="trackRows"><p class="empty">No plays yet.</p></div>
-    </div>
-
-    <div class="card">
-      <h2>Daily visits — last 14 days</h2>
+      <h2 id="chartTitle">Daily activity</h2>
+      <div class="filters" style="margin-bottom:4px">
+        <button class="chip sel" data-metric="visit">Visits</button>
+        <button class="chip" data-metric="play">Plays</button>
+        <button class="chip" data-metric="download">Downloads</button>
+        <span class="spacer"></span>
+        <span class="meta" id="updated"></span>
+        <button class="chip" id="refresh">Refresh</button>
+      </div>
       <div class="cols" id="dailyCols"></div>
       <details>
         <summary>Data table</summary>
@@ -125,11 +142,17 @@
     </div>
 
     <div class="card">
+      <h2 id="tracksTitle">Plays by track</h2>
+      <div id="trackRows"><p class="empty">No plays yet.</p></div>
+    </div>
+
+    <div class="card">
       <h2>Donate popup choices</h2>
       <div id="donateRows"><p class="empty">No donate clicks yet.</p></div>
     </div>
   </div>
 </div>
+<div id="tip"></div>
 
 <script>
 const TRACK_NAMES = {
@@ -144,12 +167,53 @@ const TRACK_NAMES = {
   "alls-fair":"All's Fair",
 };
 const DONATE_NAMES = {"yes-5":"Yes — $5","yes-custom":"Yes — custom amount","no":"No thanks, just download"};
+const METRIC_NAMES = {visit:"Visits", play:"Plays", download:"Downloads"};
+const RANGES = [
+  {k:"today", label:"Today", days:1},
+  {k:"yesterday", label:"Yesterday", days:1, offset:1},
+  {k:"3d", label:"Last 3 days", days:3},
+  {k:"7d", label:"Last 7 days", days:7},
+  {k:"14d", label:"Last 14 days", days:14},
+  {k:"30d", label:"Last 30 days", days:30},
+  {k:"all", label:"All time"},
+];
+const TZ = "America/New_York";
+let DATA = null, range = "7d", metric = "visit";
+
 const gate = document.getElementById("gate");
 const dash = document.getElementById("dash");
 const keyErr = document.getElementById("keyErr");
+const tip = document.getElementById("tip");
 
 function getKey(){ try{return localStorage.getItem("lw-admin-key")||""}catch(e){return ""} }
 function setKey(k){ try{localStorage.setItem("lw-admin-key",k)}catch(e){} }
+
+function dayStr(offset){
+  return new Date(Date.now() - offset*86400000).toLocaleDateString("en-CA", {timeZone: TZ});
+}
+function niceDay(d){
+  const dt = new Date(d + "T12:00:00");
+  return dt.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"});
+}
+function rangeDays(){
+  const r = RANGES.find(x=>x.k===range);
+  if(r.k==="all"){
+    const first = DATA.since || dayStr(0);
+    const out = [];
+    for(let d = new Date(first+"T12:00:00"); ; d.setDate(d.getDate()+1)){
+      const s = d.toLocaleDateString("en-CA");
+      out.push(s);
+      if(s >= dayStr(0) || out.length > 120) break;
+    }
+    return out;
+  }
+  const off = r.offset || 0;
+  const out = [];
+  for(let i = r.days - 1 + off; i >= off; i--) out.push(dayStr(i));
+  return out;
+}
+function empty(){ return {visit:0,play:0,download:0,donate:0,tracks:{},donateDetail:{}}; }
+function dayData(d){ return (DATA.days && DATA.days[d]) || empty(); }
 
 async function load(key){
   const r = await fetch("/api/stats?key=" + encodeURIComponent(key));
@@ -158,55 +222,149 @@ async function load(key){
   return r.json();
 }
 
-function barRows(el, entries, nameMap){
-  if(!entries.length){ el.innerHTML = '<p class="empty">Nothing yet.</p>'; return; }
-  const max = Math.max(...entries.map(e=>e[1]));
-  el.innerHTML = entries.map(([k,v])=>{
-    const name = nameMap[k] || k;
-    const w = max ? Math.max(2,(v/max*100)) : 2;
-    return `<div class="row" title="${name}: ${v}">`+
-      `<span class="name">${name}</span>`+
-      `<span class="barwrap"><span class="bar" style="width:${w}%"></span></span>`+
-      `<span class="val">${v}</span></div>`;
-  }).join("");
+/* tooltip */
+function showTip(html, x, y){
+  tip.innerHTML = html;
+  tip.style.display = "block";
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let left = x + 14, top = y - h - 10;
+  if(left + w > innerWidth - 8) left = x - w - 14;
+  if(left < 8) left = 8;
+  if(top < 8) top = y + 18;
+  tip.style.left = left + "px";
+  tip.style.top = top + "px";
+}
+function hideTip(){ tip.style.display = "none"; }
+function attachTip(el, htmlFn){
+  el.addEventListener("mousemove", e=> showTip(htmlFn(), e.clientX, e.clientY));
+  el.addEventListener("mouseleave", hideTip);
+  el.addEventListener("click", e=> showTip(htmlFn(), e.clientX, e.clientY));
 }
 
-function render(s){
-  document.getElementById("tVisits").textContent = s.totals.visit;
-  document.getElementById("tPlays").textContent = s.totals.play;
-  document.getElementById("tDownloads").textContent = s.totals.download;
-  document.getElementById("tDonate").textContent = s.totals.donate;
-  const yes = Object.entries(s.donate).filter(([k])=>k.startsWith("yes")).reduce((a,[,v])=>a+v,0);
-  const no = s.donate["no"]||0;
-  document.getElementById("tDonateSub").textContent = s.totals.donate ? `${yes} yes · ${no} no` : "";
-
-  const trackEntries = Object.entries(s.tracks).sort((a,b)=>b[1]-a[1]);
-  barRows(document.getElementById("trackRows"), trackEntries, TRACK_NAMES);
-
-  const donateEntries = Object.entries(s.donate).sort((a,b)=>b[1]-a[1]);
-  barRows(document.getElementById("donateRows"), donateEntries, DONATE_NAMES);
-
-  const days=[];
-  for(let i=13;i>=0;i--){
-    const d=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
-    days.push([d, s.daily[d] || {visit:0,play:0,download:0,donate:0}]);
+function sumRange(days){
+  const agg = empty();
+  for(const d of days){
+    const v = dayData(d);
+    agg.visit+=v.visit; agg.play+=v.play; agg.download+=v.download; agg.donate+=v.donate;
+    for(const [k,n] of Object.entries(v.tracks)) agg.tracks[k]=(agg.tracks[k]||0)+n;
+    for(const [k,n] of Object.entries(v.donateDetail)) agg.donateDetail[k]=(agg.donateDetail[k]||0)+n;
   }
-  const maxV = Math.max(1, ...days.map(([,v])=>v.visit));
-  document.getElementById("dailyCols").innerHTML = days.map(([d,v])=>{
-    const h = Math.max(2, v.visit/maxV*100);
-    const label = d.slice(5).replace("-","/");
-    return `<div class="col" title="${d} — ${v.visit} visits, ${v.play} plays">`+
-      `<span class="cv">${v.visit||""}</span>`+
-      `<span class="stick" style="height:${h}px"></span>`+
-      `<span class="cl">${label}</span></div>`;
-  }).join("");
+  return agg;
+}
+
+function dayTipHtml(d){
+  const v = dayData(d);
+  const songs = Object.entries(v.tracks).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  let html = `<div class="t-head">${niceDay(d)}</div>`+
+    `<div class="t-line"><span>Visits</span><b>${v.visit}</b></div>`+
+    `<div class="t-line"><span>Song plays</span><b>${v.play}</b></div>`+
+    `<div class="t-line"><span>Downloads</span><b>${v.download}</b></div>`+
+    `<div class="t-line"><span>Donate clicks</span><b>${v.donate}</b></div>`;
+  if(songs.length){
+    html += `<div class="t-sec">Songs played</div>`;
+    html += songs.map(([k,n])=>`<div class="t-line"><span>${TRACK_NAMES[k]||k}</span><b>${n}</b></div>`).join("");
+  }
+  return html;
+}
+function trackTipHtml(slug, days, total){
+  const perDay = days.map(d=>[d, dayData(d).tracks[slug]||0]).filter(([,n])=>n>0).reverse().slice(0,10);
+  let html = `<div class="t-head">${TRACK_NAMES[slug]||slug}</div>`+
+    `<div class="t-sub">${total} play${total===1?"":"s"} in ${RANGES.find(r=>r.k===range).label.toLowerCase()}</div>`;
+  if(perDay.length){
+    html += perDay.map(([d,n])=>`<div class="t-line"><span>${niceDay(d)}</span><b>${n}</b></div>`).join("");
+  }
+  return html;
+}
+
+function render(){
+  const days = rangeDays();
+  const agg = sumRange(days);
+  const rLabel = RANGES.find(r=>r.k===range).label;
+
+  document.getElementById("tVisits").textContent = agg.visit;
+  document.getElementById("tPlays").textContent = agg.play;
+  document.getElementById("tDownloads").textContent = agg.download;
+  document.getElementById("tDonate").textContent = agg.donate;
+  const yes = Object.entries(agg.donateDetail).filter(([k])=>k.startsWith("yes")).reduce((a,[,v])=>a+v,0);
+  document.getElementById("tDonateSub").textContent = agg.donate ? `${yes} yes · ${agg.donateDetail["no"]||0} no` : "";
+
+  document.getElementById("chartTitle").textContent = `Daily activity — ${rLabel}`;
+  document.getElementById("tracksTitle").textContent = `Plays by track — ${rLabel}`;
+
+  /* daily chart */
+  const colsEl = document.getElementById("dailyCols");
+  colsEl.classList.toggle("dense", days.length > 8);
+  const maxV = Math.max(1, ...days.map(d=>dayData(d)[metric]));
+  colsEl.innerHTML = "";
+  for(const d of days){
+    const v = dayData(d)[metric];
+    const col = document.createElement("div");
+    col.className = "col";
+    col.innerHTML = `<span class="cv">${v||""}</span>`+
+      `<span class="stick" style="height:${Math.max(2, v/maxV*104)}px"></span>`+
+      `<span class="cl">${d.slice(5).replace("-","/")}</span>`;
+    attachTip(col, ()=>dayTipHtml(d));
+    colsEl.appendChild(col);
+  }
   document.getElementById("dailyTable").innerHTML =
     "<tr><th>Day</th><th>Visits</th><th>Plays</th><th>Downloads</th><th>Donate clicks</th></tr>" +
-    days.map(([d,v])=>`<tr><td>${d}</td><td>${v.visit}</td><td>${v.play}</td><td>${v.download}</td><td>${v.donate}</td></tr>`).join("");
+    days.map(d=>{const v=dayData(d);return `<tr><td>${d}</td><td>${v.visit}</td><td>${v.play}</td><td>${v.download}</td><td>${v.donate}</td></tr>`}).join("");
 
-  document.getElementById("updated").textContent =
-    `${s.events} events total · updated ${new Date().toLocaleTimeString()}`;
+  /* track rows */
+  const trackEl = document.getElementById("trackRows");
+  const entries = Object.entries(agg.tracks).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){ trackEl.innerHTML = '<p class="empty">No plays in this range.</p>'; }
+  else{
+    const max = entries[0][1];
+    trackEl.innerHTML = "";
+    for(const [slug,n] of entries){
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `<span class="name">${TRACK_NAMES[slug]||slug}</span>`+
+        `<span class="barwrap"><span class="bar" style="width:${Math.max(2,n/max*100)}%"></span></span>`+
+        `<span class="val">${n}</span>`;
+      attachTip(row, ()=>trackTipHtml(slug, days, n));
+      trackEl.appendChild(row);
+    }
+  }
+
+  /* donate rows */
+  const donEl = document.getElementById("donateRows");
+  const dEntries = Object.entries(agg.donateDetail).sort((a,b)=>b[1]-a[1]);
+  if(!dEntries.length){ donEl.innerHTML = '<p class="empty">No donate clicks in this range.</p>'; }
+  else{
+    const dMax = dEntries[0][1];
+    donEl.innerHTML = dEntries.map(([k,n])=>
+      `<div class="row" title="${DONATE_NAMES[k]||k}: ${n}"><span class="name">${DONATE_NAMES[k]||k}</span>`+
+      `<span class="barwrap"><span class="bar" style="width:${Math.max(2,n/dMax*100)}%"></span></span>`+
+      `<span class="val">${n}</span></div>`).join("");
+  }
+
+  document.getElementById("updated").textContent = `${DATA.events} events · ${new Date().toLocaleTimeString()}`;
 }
+
+/* range chips */
+const rangesEl = document.getElementById("ranges");
+for(const r of RANGES){
+  const b = document.createElement("button");
+  b.className = "chip" + (r.k===range?" sel":"");
+  b.textContent = r.label;
+  b.addEventListener("click", ()=>{
+    range = r.k;
+    rangesEl.querySelectorAll(".chip").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel");
+    hideTip(); render();
+  });
+  rangesEl.appendChild(b);
+}
+document.querySelectorAll("[data-metric]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    metric = b.dataset.metric;
+    document.querySelectorAll("[data-metric]").forEach(x=>x.classList.remove("sel"));
+    b.classList.add("sel");
+    hideTip(); render();
+  });
+});
 
 async function tryKey(key){
   keyErr.style.display="none";
@@ -215,15 +373,16 @@ async function tryKey(key){
   catch(e){ keyErr.textContent = String(e.message||e); keyErr.style.display="block"; return; }
   if(!s){ keyErr.textContent = "Wrong key — try again."; keyErr.style.display="block"; return; }
   setKey(key);
+  DATA = s;
   gate.style.display="none";
   dash.style.display="block";
-  render(s);
+  render();
 }
 
 document.getElementById("keyGo").addEventListener("click", ()=> tryKey(document.getElementById("keyInput").value.trim()));
 document.getElementById("keyInput").addEventListener("keydown", e=>{ if(e.key==="Enter") tryKey(e.target.value.trim()); });
 document.getElementById("refresh").addEventListener("click", async ()=>{
-  const s = await load(getKey()); if(s) render(s);
+  const s = await load(getKey()); if(s){ DATA = s; render(); }
 });
 if(getKey()) tryKey(getKey());
 </script>

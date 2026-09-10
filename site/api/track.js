@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     }
     const d = String(detail || 'none').toLowerCase().replace(/[^a-z0-9$-]/g, '').slice(0, 40) || 'none';
     const now = new Date();
-    const day = now.toISOString().slice(0, 10);
+    const day = now.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
     const path = `events/${day}/${type}__${d}__${now.getTime()}-${Math.random().toString(36).slice(2, 8)}`;
     const opts = { addRandomSuffix: false, contentType: 'text/plain' };
     try {
