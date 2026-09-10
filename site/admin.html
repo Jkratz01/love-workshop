@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Love Workshop — Admin</title>
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#e4f2e6;
+    --cream:#f5f7ef;
+    --ink:#3d3849;
+    --ink-soft:#8b7f9e;
+    --accent:#3f2054;
+    --bar:#3f2054;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Space Grotesk",system-ui,-apple-system,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg, var(--cream) 0%, var(--mint) 100%);
+    min-height:100vh;padding:36px 20px 80px;
+  }
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-family:"Monoton",cursive;font-weight:400;font-size:clamp(24px,4.5vw,40px);color:var(--accent);margin-bottom:4px}
+  .sub{color:var(--ink-soft);font-size:14px;margin-bottom:28px}
+  .card{background:var(--card);border:1px solid #eceadf;border-radius:16px;padding:22px 24px;box-shadow:0 14px 34px -24px #3f205440;margin-bottom:20px}
+  h2{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:16px}
+
+  /* key gate */
+  #gate{max-width:420px;margin:80px auto;text-align:center}
+  #gate input{
+    width:100%;padding:13px 16px;border:1.5px solid #d8d2e2;border-radius:12px;
+    font-family:inherit;font-size:15px;margin:14px 0;outline:none;
+  }
+  #gate input:focus{border-color:var(--accent)}
+  #gate button{
+    width:100%;background:var(--accent);color:#fdfcf8;border:none;border-radius:999px;
+    padding:13px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;
+  }
+  #gate .err{color:#a33b3b;font-size:13px;margin-top:10px;display:none}
+
+  /* stat tiles */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+  .tile{background:var(--card);border:1px solid #eceadf;border-radius:16px;padding:18px 20px;box-shadow:0 14px 34px -24px #3f205440}
+  .tile .n{font-size:32px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
+  .tile .l{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-top:6px}
+  .tile .s{font-size:12px;color:var(--ink-soft);margin-top:4px}
+
+  /* horizontal bar rows */
+  .row{display:grid;grid-template-columns:210px 1fr 48px;align-items:center;gap:12px;padding:7px 0;font-size:14px}
+  .row .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .barwrap{height:16px;display:flex;align-items:center}
+  .row .bar{height:12px;border-radius:0 4px 4px 0;background:var(--bar);min-width:2px;transition:width .4s ease}
+  .row .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .row:hover{background:#3f205408}
+
+  /* daily columns */
+  .cols{display:flex;align-items:flex-end;gap:6px;height:140px;padding-top:18px}
+  .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+  .col .stick{width:100%;max-width:34px;background:var(--bar);border-radius:4px 4px 0 0;min-height:2px;transition:height .4s ease}
+  .col .cl{font-size:10.5px;color:var(--ink-soft);white-space:nowrap}
+  .col .cv{font-size:11px;color:var(--ink);font-variant-numeric:tabular-nums;height:14px}
+  details{margin-top:14px;font-size:13px;color:var(--ink-soft)}
+  table{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+  th,td{text-align:right;padding:4px 10px;border-bottom:1px solid #eee9f2;font-variant-numeric:tabular-nums}
+  th:first-child,td:first-child{text-align:left}
+  th{color:var(--ink-soft);font-weight:500}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .toolbar .meta{font-size:13px;color:var(--ink-soft)}
+  .toolbar button{
+    background:var(--card);border:1px solid #d8d2e2;border-radius:999px;padding:9px 18px;
+    font-family:inherit;font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;
+  }
+  .toolbar button:hover{border-color:var(--accent)}
+  #dash{display:none}
+  .empty{color:var(--ink-soft);font-size:14px;padding:6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="gate">
+    <h1>Admin</h1>
+    <p class="sub">Love Workshop stats</p>
+    <input id="keyInput" type="password" placeholder="Admin key" autocomplete="off">
+    <button id="keyGo">View stats</button>
+    <p class="err" id="keyErr">Wrong key — try again.</p>
+  </div>
+
+  <div id="dash">
+    <h1>Love Workshop</h1>
+    <p class="sub">Site &amp; listening stats · tracked since Sep 10, 2026</p>
+
+    <div class="toolbar">
+      <span class="meta" id="updated"></span>
+      <button id="refresh">Refresh</button>
+    </div>
+
+    <div class="tiles">
+      <div class="tile"><div class="n" id="tVisits">–</div><div class="l">Visits</div></div>
+      <div class="tile"><div class="n" id="tPlays">–</div><div class="l">Song plays</div></div>
+      <div class="tile"><div class="n" id="tDownloads">–</div><div class="l">Downloads</div></div>
+      <div class="tile"><div class="n" id="tDonate">–</div><div class="l">Donate clicks</div><div class="s" id="tDonateSub"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Plays by track</h2>
+      <div id="trackRows"><p class="empty">No plays yet.</p></div>
+    </div>
+
+    <div class="card">
+      <h2>Daily visits — last 14 days</h2>
+      <div class="cols" id="dailyCols"></div>
+      <details>
+        <summary>Data table</summary>
+        <table id="dailyTable"></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>Donate popup choices</h2>
+      <div id="donateRows"><p class="empty">No donate clicks yet.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TRACK_NAMES = {
+  "love-workshop-intro":"Love Workshop (Intro)",
+  "phone":"Phone",
+  "broken-record":"Broken Record",
+  "she-a-dime":"She A Dime",
+  "cook-so-well-interlude":"Cook So Well (Interlude)",
+  "undercover-lover":"Undercover Lover",
+  "barely-lovin-thought-it-was":"Barely Lovin (Thought It Was)",
+  "miss-you-anymore":"Miss You Anymore",
+  "alls-fair":"All's Fair",
+};
+const DONATE_NAMES = {"yes-5":"Yes — $5","yes-custom":"Yes — custom amount","no":"No thanks, just download"};
+const gate = document.getElementById("gate");
+const dash = document.getElementById("dash");
+const keyErr = document.getElementById("keyErr");
+
+function getKey(){ try{return localStorage.getItem("lw-admin-key")||""}catch(e){return ""} }
+function setKey(k){ try{localStorage.setItem("lw-admin-key",k)}catch(e){} }
+
+async function load(key){
+  const r = await fetch("/api/stats?key=" + encodeURIComponent(key));
+  if(r.status===401) return null;
+  if(!r.ok) throw new Error("stats failed: " + r.status);
+  return r.json();
+}
+
+function barRows(el, entries, nameMap){
+  if(!entries.length){ el.innerHTML = '<p class="empty">Nothing yet.</p>'; return; }
+  const max = Math.max(...entries.map(e=>e[1]));
+  el.innerHTML = entries.map(([k,v])=>{
+    const name = nameMap[k] || k;
+    const w = max ? Math.max(2,(v/max*100)) : 2;
+    return `<div class="row" title="${name}: ${v}">`+
+      `<span class="name">${name}</span>`+
+      `<span class="barwrap"><span class="bar" style="width:${w}%"></span></span>`+
+      `<span class="val">${v}</span></div>`;
+  }).join("");
+}
+
+function render(s){
+  document.getElementById("tVisits").textContent = s.totals.visit;
+  document.getElementById("tPlays").textContent = s.totals.play;
+  document.getElementById("tDownloads").textContent = s.totals.download;
+  document.getElementById("tDonate").textContent = s.totals.donate;
+  const yes = Object.entries(s.donate).filter(([k])=>k.startsWith("yes")).reduce((a,[,v])=>a+v,0);
+  const no = s.donate["no"]||0;
+  document.getElementById("tDonateSub").textContent = s.totals.donate ? `${yes} yes · ${no} no` : "";
+
+  const trackEntries = Object.entries(s.tracks).sort((a,b)=>b[1]-a[1]);
+  barRows(document.getElementById("trackRows"), trackEntries, TRACK_NAMES);
+
+  const donateEntries = Object.entries(s.donate).sort((a,b)=>b[1]-a[1]);
+  barRows(document.getElementById("donateRows"), donateEntries, DONATE_NAMES);
+
+  const days=[];
+  for(let i=13;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+    days.push([d, s.daily[d] || {visit:0,play:0,download:0,donate:0}]);
+  }
+  const maxV = Math.max(1, ...days.map(([,v])=>v.visit));
+  document.getElementById("dailyCols").innerHTML = days.map(([d,v])=>{
+    const h = Math.max(2, v.visit/maxV*100);
+    const label = d.slice(5).replace("-","/");
+    return `<div class="col" title="${d} — ${v.visit} visits, ${v.play} plays">`+
+      `<span class="cv">${v.visit||""}</span>`+
+      `<span class="stick" style="height:${h}px"></span>`+
+      `<span class="cl">${label}</span></div>`;
+  }).join("");
+  document.getElementById("dailyTable").innerHTML =
+    "<tr><th>Day</th><th>Visits</th><th>Plays</th><th>Downloads</th><th>Donate clicks</th></tr>" +
+    days.map(([d,v])=>`<tr><td>${d}</td><td>${v.visit}</td><td>${v.play}</td><td>${v.download}</td><td>${v.donate}</td></tr>`).join("");
+
+  document.getElementById("updated").textContent =
+    `${s.events} events total · updated ${new Date().toLocaleTimeString()}`;
+}
+
+async function tryKey(key){
+  keyErr.style.display="none";
+  let s;
+  try{ s = await load(key); }
+  catch(e){ keyErr.textContent = String(e.message||e); keyErr.style.display="block"; return; }
+  if(!s){ keyErr.textContent = "Wrong key — try again."; keyErr.style.display="block"; return; }
+  setKey(key);
+  gate.style.display="none";
+  dash.style.display="block";
+  render(s);
+}
+
+document.getElementById("keyGo").addEventListener("click", ()=> tryKey(document.getElementById("keyInput").value.trim()));
+document.getElementById("keyInput").addEventListener("keydown", e=>{ if(e.key==="Enter") tryKey(e.target.value.trim()); });
+document.getElementById("refresh").addEventListener("click", async ()=>{
+  const s = await load(getKey()); if(s) render(s);
+});
+if(getKey()) tryKey(getKey());
+</script>
+</body>
+</html>

@@ -281,7 +281,7 @@
 
   <section class="bio">
     <h2>About the Album</h2>
-    <p>Timothy Hintz and Ari Perlman aka LoBo_301, Came together to create this incredible jazz filled hip hop album. No samples outside of the album were used. This entire album is made from scratch with the help of artists such as OneTakeTimmy, Bomani X, Pat Dimitri, Popafidi, and LoBo_301.</p>
+    <p>Timothy Hintz aka OTT and Ari Perlman aka LoBo_301, Came together to create this incredible jazz filled hip hop album. No samples outside of the album were used. This entire album is made from scratch with the help of artists such as OneTakeTimmy, Bomani X, Pat Dimitri, Popafidi, and LoBo_301.</p>
     <div class="credits">
       <span class="credit">OneTakeTimmy</span>
       <span class="credit">Bomani X</span>
@@ -452,6 +452,26 @@ if("mediaSession" in navigator){
   navigator.mediaSession.setActionHandler("nexttrack", ()=> document.getElementById("nextBtn").click());
 }
 
+/* lightweight event tracking (viewable at /admin) */
+function track(type, detail){
+  try{
+    const payload = JSON.stringify({type, detail});
+    if(navigator.sendBeacon){
+      navigator.sendBeacon("/api/track", new Blob([payload], {type:"application/json"}));
+    }else{
+      fetch("/api/track", {method:"POST", headers:{"content-type":"application/json"}, body:payload, keepalive:true});
+    }
+  }catch(e){}
+}
+track("visit", "home");
+const playedOnce = new Set();
+audio.addEventListener("play", ()=>{
+  if(current>=0 && !playedOnce.has(current)){
+    playedOnce.add(current);
+    track("play", TRACKS[current].file);
+  }
+});
+
 /* donate-before-download popup */
 const donateModal = document.getElementById("donateModal");
 const mYes = document.getElementById("mYes");
@@ -463,6 +483,7 @@ function startDownload(){
 }
 document.getElementById("downloadBtn").addEventListener("click", e=>{
   e.preventDefault();
+  track("download", "click");
   donateModal.classList.add("open");
 });
 document.getElementById("amounts").addEventListener("click", e=>{
@@ -473,10 +494,13 @@ document.getElementById("amounts").addEventListener("click", e=>{
   mYes.href = b.dataset.amt ? "https://cash.app/$lobo301/" + b.dataset.amt : "https://cash.app/$lobo301";
 });
 mYes.addEventListener("click", ()=>{
+  const sel = document.querySelector(".amount.sel");
+  track("donate", sel && sel.dataset.amt ? "yes-" + sel.dataset.amt : "yes-custom");
   donateModal.classList.remove("open");
   setTimeout(startDownload, 400);
 });
 document.getElementById("mNo").addEventListener("click", ()=>{
+  track("donate", "no");
   donateModal.classList.remove("open");
   startDownload();
 });
