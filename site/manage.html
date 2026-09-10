@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Love Workshop — Album Manager</title>
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --mint:#e4f2e6;--cream:#f5f7ef;--ink:#3d3849;--ink-soft:#8b7f9e;
+    --accent:#3f2054;--card:#ffffff;--good:#2e7d4f;--warn:#a33b3b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Space Grotesk",system-ui,sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,var(--cream) 0%,var(--mint) 100%);min-height:100vh;padding:36px 20px 100px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-family:"Monoton",cursive;font-weight:400;font-size:clamp(22px,4vw,36px);color:var(--accent);margin-bottom:4px}
+  .sub{color:var(--ink-soft);font-size:14px;margin-bottom:24px}
+  .card{background:var(--card);border:1px solid #eceadf;border-radius:16px;padding:20px 22px;box-shadow:0 14px 34px -24px #3f205440;margin-bottom:16px}
+  h2{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px}
+  button{font-family:inherit;cursor:pointer}
+  .btn{background:var(--accent);color:#fdfcf8;border:none;border-radius:999px;padding:11px 22px;font-size:14px;font-weight:700}
+  .btn:hover{background:#533070}
+  .btn.ghost{background:var(--card);color:var(--accent);border:1.5px solid #d8d2e2}
+  .btn.ghost:hover{border-color:var(--accent);background:var(--card)}
+  .btn.small{padding:7px 14px;font-size:13px}
+  .btn.danger{background:#fff;color:var(--warn);border:1.5px solid #e3c8c8}
+  .btn.danger:hover{border-color:var(--warn)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  input[type=text],textarea{width:100%;padding:11px 14px;border:1.5px solid #d8d2e2;border-radius:11px;font-family:inherit;font-size:14px;outline:none;background:#fff}
+  input[type=text]:focus,textarea:focus{border-color:var(--accent)}
+  label{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 6px}
+  #gate{max-width:420px;margin:80px auto;text-align:center}
+  #gate input{margin:14px 0}
+  #gate .err{color:var(--warn);font-size:13px;margin-top:10px;display:none}
+  .album-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #f0ede4;flex-wrap:wrap}
+  .album-row:last-child{border-bottom:none}
+  .album-row .cov{width:52px;height:52px;border-radius:9px;object-fit:cover;background:#eee;box-shadow:0 6px 14px -8px #3f205466}
+  .album-row .meta{flex:1;min-width:140px}
+  .album-row .meta b{font-size:16px}
+  .album-row .meta span{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .badge{background:var(--good);color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 11px;border-radius:999px;text-transform:uppercase}
+  .trk{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0ede4;flex-wrap:wrap}
+  .trk .num{width:22px;text-align:right;color:var(--ink-soft);font-size:13px;font-variant-numeric:tabular-nums}
+  .trk input.t-title{flex:2;min-width:130px}
+  .trk input.t-sub{flex:1;min-width:80px}
+  .trk .dur{width:44px;font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;text-align:right}
+  .trk .ctl{display:flex;gap:5px}
+  .icon-btn{background:#fff;border:1.5px solid #d8d2e2;border-radius:9px;width:32px;height:32px;font-size:14px;color:var(--ink);display:flex;align-items:center;justify-content:center}
+  .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .trk .filebadge{font-size:11.5px;color:var(--ink-soft);max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .toolbar .spacer{flex:1}
+  #toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#2c2138f0;color:#f4f0fa;
+    padding:12px 22px;border-radius:999px;font-size:14px;display:none;z-index:40;box-shadow:0 16px 40px -12px #16102490}
+  .coverbox{display:flex;gap:16px;align-items:center}
+  .coverbox img{width:96px;height:96px;border-radius:12px;object-fit:cover;background:#eee}
+  .hint{font-size:12.5px;color:var(--ink-soft);margin-top:8px;line-height:1.5}
+  .prog{font-size:12.5px;color:var(--accent);font-weight:700}
+  #list,#editor{display:none}
+  a.back{color:var(--accent);font-size:13.5px;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="gate">
+    <h1>Manager</h1>
+    <p class="sub">Album manager</p>
+    <input id="keyInput" type="password" placeholder="Admin key" autocomplete="off">
+    <button class="btn" id="keyGo" style="width:100%">Open manager</button>
+    <p class="err" id="keyErr">Wrong key — try again.</p>
+  </div>
+
+  <div id="list">
+    <h1>Albums</h1>
+    <p class="sub">The album marked LIVE is what visitors see on the site — one at a time.</p>
+    <div class="toolbar">
+      <button class="btn" id="newAlbum">+ New album</button>
+      <span class="spacer"></span>
+      <a class="back" href="/stats">Stats →</a>
+    </div>
+    <div class="card" id="albumRows"></div>
+  </div>
+
+  <div id="editor">
+    <div class="toolbar">
+      <a class="back" href="#" id="backBtn">← All albums</a>
+      <span class="spacer"></span>
+      <span class="prog" id="busy"></span>
+      <button class="btn ghost" id="publishBtn">Publish — make live</button>
+      <button class="btn" id="saveBtn">Save</button>
+    </div>
+    <div class="card">
+      <h2>Album details</h2>
+      <label>Title</label><input type="text" id="fTitle">
+      <label>Artist</label><input type="text" id="fArtist">
+      <label>Byline (shown under title — leave blank for "by Artist")</label><input type="text" id="fByline">
+      <label>Bio / about the album</label><textarea id="fBio" rows="4"></textarea>
+      <label>Credits (comma-separated)</label><input type="text" id="fCredits">
+      <label>Cover art credit line (footer)</label><input type="text" id="fCoverCredit">
+      <label>Cover image</label>
+      <div class="coverbox">
+        <img id="coverPreview" src="" alt="">
+        <div>
+          <button class="btn ghost small" id="coverBtn">Upload cover…</button>
+          <p class="hint">Square image, JPG or PNG.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Tracks</h2>
+      <div id="trkRows"></div>
+      <div style="margin-top:14px">
+        <button class="btn ghost small" id="addTrack">+ Add tracks…</button>
+        <p class="hint">Pick one or more audio files (m4a/mp3 best — wav works but is heavy). Each becomes a track; the filename becomes the title, which you can edit. Use ⬆⬇ to reorder, ♫ to replace a track's audio.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<input type="file" id="fileAudio" accept="audio/*" multiple hidden>
+<input type="file" id="fileAudioOne" accept="audio/*" hidden>
+<input type="file" id="fileCover" accept="image/*" hidden>
+
+<script type="module">
+import { upload } from 'https://esm.sh/@vercel/blob@2.8.0/client';
+
+const $ = id => document.getElementById(id);
+let CONFIG = null, cur = null, dirty = false;
+
+function getKey(){ try{return localStorage.getItem("lw-admin-key")||""}catch(e){return ""} }
+function setKey(k){ try{localStorage.setItem("lw-admin-key",k)}catch(e){} }
+function toast(msg, ms=2600){ const t=$("toast"); t.textContent=msg; t.style.display="block"; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display="none",ms); }
+function busy(msg){ $("busy").textContent = msg||""; }
+function slugify(s){ return s.toLowerCase().replace(/['()]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,50)||"track"; }
+function uniqueSlug(base, taken){ let s=base,n=2; while(taken.has(s)) s=`${base}-${n++}`; taken.add(s); return s; }
+function fmt(s){ s=Math.max(0,Math.round(s||0)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+
+async function api(method, body){
+  const r = await fetch("/api/albums?key="+encodeURIComponent(getKey()), {
+    method, headers: body?{"content-type":"application/json"}:{}, body: body?JSON.stringify(body):undefined,
+  });
+  if(r.status===401) throw new Error("unauthorized");
+  const j = await r.json();
+  if(!r.ok) throw new Error(j.error||("request failed "+r.status));
+  return j;
+}
+
+async function uploadFile(file, prefix){
+  const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g,"-").slice(-60);
+  const blob = await upload(`${prefix}/${safe}`, file, {
+    access: "public",
+    handleUploadUrl: "/api/upload",
+    clientPayload: JSON.stringify({key:getKey()}),
+    onUploadProgress: p => busy(`Uploading ${file.name}: ${Math.round(p.percentage)}%`),
+  });
+  busy("");
+  return blob.url;
+}
+function readDur(file){
+  return new Promise(resolve=>{
+    const url = URL.createObjectURL(file);
+    const a = new Audio();
+    a.preload = "metadata";
+    a.onloadedmetadata = ()=>{ resolve(Math.round(a.duration)||0); URL.revokeObjectURL(url); };
+    a.onerror = ()=>{ resolve(0); URL.revokeObjectURL(url); };
+    a.src = url;
+  });
+}
+
+/* ---------- list view ---------- */
+function showList(){
+  cur = null;
+  $("editor").style.display="none";
+  $("list").style.display="block";
+  const el = $("albumRows");
+  el.innerHTML = "";
+  for(const a of CONFIG.albums){
+    const live = a.id === CONFIG.activeId;
+    const row = document.createElement("div");
+    row.className = "album-row";
+    const img = document.createElement("img"); img.className="cov"; img.src = a.cover || "/icon.png";
+    const meta = document.createElement("div"); meta.className="meta";
+    meta.innerHTML = `<b></b><span>${a.tracks.length} track${a.tracks.length===1?"":"s"} · ${a.artist||""}</span>`;
+    meta.querySelector("b").textContent = a.title;
+    row.append(img, meta);
+    if(live){ const b=document.createElement("span"); b.className="badge"; b.textContent="Live"; row.appendChild(b); }
+    else{
+      const pub=document.createElement("button"); pub.className="btn ghost small"; pub.textContent="Make live";
+      pub.onclick = async ()=>{ if(!confirm(`Put "${a.title}" on the site and hide "${CONFIG.albums.find(x=>x.id===CONFIG.activeId)?.title}"?`)) return;
+        CONFIG.activeId=a.id; await saveConfig("Now live: "+a.title); showList(); };
+      row.appendChild(pub);
+    }
+    const edit=document.createElement("button"); edit.className="btn small"; edit.textContent="Edit";
+    edit.onclick = ()=> showEditor(a.id);
+    row.appendChild(edit);
+    if(!live && CONFIG.albums.length>1){
+      const del=document.createElement("button"); del.className="btn danger small"; del.textContent="Delete";
+      del.onclick = async ()=>{ if(!confirm(`Delete "${a.title}"? This can't be undone.`)) return;
+        CONFIG.albums = CONFIG.albums.filter(x=>x.id!==a.id); await saveConfig("Deleted "+a.title); showList(); };
+      row.appendChild(del);
+    }
+    el.appendChild(row);
+  }
+}
+
+/* ---------- editor ---------- */
+function album(){ return CONFIG.albums.find(a=>a.id===cur); }
+function showEditor(id){
+  cur = id;
+  const a = album();
+  $("list").style.display="none";
+  $("editor").style.display="block";
+  $("fTitle").value = a.title||"";
+  $("fArtist").value = a.artist||"";
+  $("fByline").value = a.byline||"";
+  $("fBio").value = a.bio||"";
+  $("fCredits").value = (a.credits||[]).join(", ");
+  $("fCoverCredit").value = a.coverCredit||"";
+  $("coverPreview").src = a.cover||"/icon.png";
+  $("publishBtn").disabled = a.id===CONFIG.activeId;
+  $("publishBtn").textContent = a.id===CONFIG.activeId ? "Live on the site" : "Publish — make live";
+  renderTracks();
+}
+function collect(){
+  const a = album();
+  a.title = $("fTitle").value.trim()||"Untitled";
+  a.artist = $("fArtist").value.trim()||"Tim and Ari";
+  a.byline = $("fByline").value.trim();
+  a.bio = $("fBio").value.trim();
+  a.credits = $("fCredits").value.split(",").map(s=>s.trim()).filter(Boolean);
+  a.coverCredit = $("fCoverCredit").value.trim();
+}
+function renderTracks(){
+  const a = album();
+  const el = $("trkRows");
+  el.innerHTML = "";
+  a.tracks.forEach((t,i)=>{
+    const row = document.createElement("div");
+    row.className = "trk";
+    row.innerHTML = `<span class="num">${i+1}</span>
+      <input type="text" class="t-title" placeholder="Track title">
+      <input type="text" class="t-sub" placeholder="Label (Intro…)">
+      <span class="dur">${fmt(t.dur)}</span>
+      <span class="filebadge" title="${t.src||""}">${t.src? t.src.split("/").pop().split("-").slice(0,3).join("-") : "no audio"}</span>
+      <span class="ctl"></span>`;
+    const ti = row.querySelector(".t-title"); ti.value = t.title||"";
+    ti.oninput = ()=>{ t.title = ti.value; dirty=true; };
+    const su = row.querySelector(".t-sub"); su.value = t.sub||"";
+    su.oninput = ()=>{ t.sub = su.value; dirty=true; };
+    const ctl = row.querySelector(".ctl");
+    const mk = (txt, title, fn, dis)=>{ const b=document.createElement("button"); b.className="icon-btn"; b.textContent=txt; b.title=title; b.disabled=!!dis; b.onclick=fn; ctl.appendChild(b); };
+    mk("⬆","Move up", ()=>{ [a.tracks[i-1],a.tracks[i]]=[a.tracks[i],a.tracks[i-1]]; dirty=true; renderTracks(); }, i===0);
+    mk("⬇","Move down", ()=>{ [a.tracks[i+1],a.tracks[i]]=[a.tracks[i],a.tracks[i+1]]; dirty=true; renderTracks(); }, i===a.tracks.length-1);
+    mk("♫","Replace audio", ()=>{ replaceIdx = i; $("fileAudioOne").click(); });
+    mk("✕","Remove track", ()=>{ if(confirm(`Remove "${t.title}"?`)){ a.tracks.splice(i,1); dirty=true; renderTracks(); } });
+    el.appendChild(row);
+  });
+  if(!a.tracks.length) el.innerHTML = '<p class="hint">No tracks yet — add some below.</p>';
+}
+
+async function saveConfig(msg){
+  collectIfEditing();
+  await api("POST", CONFIG);
+  dirty = false;
+  toast(msg||"Saved ✓");
+}
+function collectIfEditing(){ if(cur && $("editor").style.display==="block") collect(); }
+
+/* ---------- events ---------- */
+let replaceIdx = -1;
+
+$("newAlbum").onclick = ()=>{
+  const title = prompt("Album title?");
+  if(!title) return;
+  const taken = new Set(CONFIG.albums.map(a=>a.id));
+  const id = uniqueSlug(slugify(title), taken);
+  CONFIG.albums.push({id, title, artist:"Tim and Ari", byline:"", bio:"", credits:[], coverCredit:"", cover:"", zip:null, tracks:[]});
+  dirty = true;
+  showEditor(id);
+  toast("Album created — add tracks, then Save.");
+};
+$("backBtn").onclick = e=>{ e.preventDefault();
+  if(dirty && !confirm("You have unsaved changes — leave anyway?")) return;
+  dirty=false; showList(); };
+$("saveBtn").onclick = async ()=>{ try{ await saveConfig(); }catch(e){ toast("Save failed: "+e.message,4000); } };
+$("publishBtn").onclick = async ()=>{
+  const a = album();
+  if(!a.tracks.length){ toast("Add at least one track first."); return; }
+  if(!confirm(`Put "${$("fTitle").value}" live on the site? The current album will be hidden.`)) return;
+  CONFIG.activeId = a.id;
+  try{ await saveConfig("Published — this album is now live ✓"); showEditor(a.id); }
+  catch(e){ toast("Publish failed: "+e.message,4000); }
+};
+$("coverBtn").onclick = ()=> $("fileCover").click();
+$("fileCover").onchange = async e=>{
+  const f = e.target.files[0]; e.target.value="";
+  if(!f) return;
+  try{
+    const url = await uploadFile(f, "media/"+cur);
+    album().cover = url; $("coverPreview").src = url; dirty=true;
+    toast("Cover uploaded — hit Save.");
+  }catch(err){ busy(""); toast("Upload failed: "+err.message,4000); }
+};
+$("addTrack").onclick = ()=> $("fileAudio").click();
+$("fileAudio").onchange = async e=>{
+  const files = [...e.target.files]; e.target.value="";
+  if(!files.length) return;
+  const a = album();
+  const taken = new Set(a.tracks.map(t=>t.slug));
+  for(const f of files){
+    try{
+      const dur = await readDur(f);
+      const url = await uploadFile(f, "media/"+cur);
+      const title = f.name.replace(/\.[^.]+$/,"").replace(/[-_]+/g," ").trim();
+      a.tracks.push({title, sub:"", slug:uniqueSlug(slugify(title), taken), src:url, dur});
+      dirty = true;
+      renderTracks();
+    }catch(err){ busy(""); toast(`Upload failed (${f.name}): ${err.message}`,4000); }
+  }
+  toast("Tracks added — hit Save.");
+};
+$("fileAudioOne").onchange = async e=>{
+  const f = e.target.files[0]; e.target.value="";
+  if(!f || replaceIdx<0) return;
+  const a = album();
+  try{
+    const dur = await readDur(f);
+    const url = await uploadFile(f, "media/"+cur);
+    a.tracks[replaceIdx].src = url;
+    a.tracks[replaceIdx].dur = dur;
+    dirty = true;
+    renderTracks();
+    toast("Audio replaced — hit Save.");
+  }catch(err){ busy(""); toast("Upload failed: "+err.message,4000); }
+  replaceIdx = -1;
+};
+window.addEventListener("beforeunload", e=>{ if(dirty){ e.preventDefault(); e.returnValue=""; } });
+
+/* ---------- gate ---------- */
+async function enter(key){
+  $("keyErr").style.display="none";
+  try{
+    setKey(key);
+    CONFIG = await api("GET");
+    $("gate").style.display="none";
+    showList();
+  }catch(e){
+    $("keyErr").textContent = e.message==="unauthorized" ? "Wrong key — try again." : ("Error: "+e.message);
+    $("keyErr").style.display="block";
+  }
+}
+$("keyGo").onclick = ()=> enter($("keyInput").value.trim());
+$("keyInput").addEventListener("keydown", e=>{ if(e.key==="Enter") enter(e.target.value.trim()); });
+if(getKey()) enter(getKey());
+</script>
+</body>
+</html>

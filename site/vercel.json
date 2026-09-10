@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/stats", "destination": "/stats.html" }
+    { "source": "/stats", "destination": "/stats.html" },
+    { "source": "/manage", "destination": "/manage.html" }
   ],
   "redirects": [
     { "source": "/admin", "destination": "/stats", "permanent": false }

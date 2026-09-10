@@ -83,7 +83,8 @@
   }
   .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 28px -8px #3f205490}
   .btn-primary:active{transform:translateY(0)}
-  .cover-sub{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+  .cover-sub{display:flex;gap:12px;margin-top:12px}
+  .cover-sub .btn-secondary{flex:1}
   .btn-secondary{
     display:flex;align-items:center;justify-content:center;gap:8px;
     background:#ffffffd0;border:1px solid #ffffff;border-radius:999px;
@@ -94,7 +95,7 @@
   }
   .btn-secondary:hover{transform:translateY(-2px);background:#fff}
   .btn-secondary svg{width:16px;height:16px;fill:var(--accent);flex-shrink:0}
-  @media (max-width:400px){.cover-sub{grid-template-columns:1fr}}
+  @media (max-width:400px){.cover-sub{flex-direction:column}}
 
   .bio{
     margin:56px 0 0;position:relative;
@@ -250,13 +251,13 @@
 <main>
   <header>
     <p class="kicker">The Album</p>
-    <h1>Love Workshop</h1>
-    <p class="byline">by Tim and Ari &middot; <a href="https://soundcloud.com/lobo301" target="_blank" rel="noopener">LoBo_301</a></p>
+    <h1 id="albumTitle">Love Workshop</h1>
+    <p class="byline"><span id="bylineText">by Tim and Ari</span> &middot; <a href="https://soundcloud.com/lobo301" target="_blank" rel="noopener">LoBo_301</a></p>
   </header>
 
   <section class="album">
     <div class="cover-wrap">
-      <img class="cover" src="/cover.jpg" alt="Love Workshop album cover — Tim and Ari">
+      <img class="cover" id="coverImg" src="/cover.jpg" alt="Album cover">
       <div class="cover-actions">
         <button class="btn-primary" id="playAll">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -281,8 +282,8 @@
 
   <section class="bio">
     <h2>About the Album</h2>
-    <p>Timothy Hintz aka OTT and Ari Perlman aka LoBo_301, Came together to create this incredible jazz filled hip hop album. No samples outside of the album were used. This entire album is made from scratch with the help of artists such as OneTakeTimmy, Bomani X, Pat Dimitri, Popafidi, and LoBo_301.</p>
-    <div class="credits">
+    <p id="bioText">Timothy Hintz aka OTT and Ari Perlman aka LoBo_301, Came together to create this incredible jazz filled hip hop album. No samples outside of the album were used. This entire album is made from scratch with the help of artists such as OneTakeTimmy, Bomani X, Pat Dimitri, Popafidi, and LoBo_301.</p>
+    <div class="credits" id="creditsRow">
       <span class="credit">OneTakeTimmy</span>
       <span class="credit">Bomani X</span>
       <span class="credit">Pat Dimitri</span>
@@ -311,7 +312,7 @@
     <button class="m-close" id="mClose" aria-label="Close">
       <svg viewBox="0 0 24 24"><path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
     </button>
-    <img class="m-art" src="/cover.jpg" alt="">
+    <img class="m-art" id="mArt" src="/cover.jpg" alt="">
     <h3 id="donateTitle">Years, blood, sweat, and tears have been put into this album.</h3>
     <p>Would you like to donate to Tim and Ari before you download?</p>
     <div class="amounts" id="amounts">
@@ -325,7 +326,7 @@
 
 <div class="player" id="player">
   <div class="player-inner">
-    <img class="p-art" src="/cover.jpg" alt="">
+    <img class="p-art" id="pArt" src="/cover.jpg" alt="">
     <div class="p-main">
       <div class="p-top">
         <div class="p-title" id="pTitle">—</div>
@@ -347,12 +348,12 @@
   </div>
 </div>
 
-<footer>Album Cover Created by Mo Runda<br>Love Workshop &copy; 2026 Tim and Ari / LoBo_301 &middot; All rights reserved</footer>
+<footer id="footerText">Album Cover Created by Mo Runda<br>Love Workshop &copy; 2026 Tim and Ari / LoBo_301 &middot; All rights reserved</footer>
 
 <audio id="audio" preload="metadata"></audio>
 
 <script>
-const TRACKS = [
+let TRACKS = [
   { title:"Love Workshop (Intro)", sub:"Intro", file:"love-workshop-intro", dur:79 },
   { title:"Phone", file:"phone", dur:230 },
   { title:"Broken Record", file:"broken-record", dur:256 },
@@ -363,6 +364,7 @@ const TRACKS = [
   { title:"Miss You Anymore", file:"miss-you-anymore", dur:221 },
   { title:"All's Fair", file:"alls-fair", dur:278 },
 ];
+let ALBUM = null;
 
 const audio = document.getElementById("audio");
 const list = document.getElementById("tracklist");
@@ -379,31 +381,38 @@ let current = -1;
 
 const fmt = s => { s = Math.max(0, Math.floor(s||0)); return Math.floor(s/60) + ":" + String(s%60).padStart(2,"0"); };
 
-TRACKS.forEach((t,i)=>{
-  const b = document.createElement("button");
-  b.className = "track"; b.setAttribute("role","listitem");
-  b.innerHTML = `<span class="num">${i+1}</span>
-    <span class="eq"><i></i><i></i><i></i></span>
-    <span><span class="title">${t.title}</span>${t.sub?`<span class="sub">${t.sub.toUpperCase()}</span>`:""}</span>
-    <span class="dur">${fmt(t.dur)}</span>`;
-  b.addEventListener("click", ()=> (i===current ? toggle() : load(i,true)));
-  list.appendChild(b);
-});
-const rows = [...list.children];
+let rows = [];
+function buildRows(){
+  list.innerHTML = "";
+  TRACKS.forEach((t,i)=>{
+    const b = document.createElement("button");
+    b.className = "track"; b.setAttribute("role","listitem");
+    b.innerHTML = `<span class="num">${i+1}</span>
+      <span class="eq"><i></i><i></i><i></i></span>
+      <span><span class="title"></span>${t.sub?`<span class="sub"></span>`:""}</span>
+      <span class="dur">${fmt(t.dur)}</span>`;
+    b.querySelector(".title").textContent = t.title;
+    if(t.sub) b.querySelector(".sub").textContent = t.sub.toUpperCase();
+    b.addEventListener("click", ()=> (i===current ? toggle() : load(i,true)));
+    list.appendChild(b);
+  });
+  rows = [...list.children];
+}
 
 function load(i, autoplay){
   current = i;
   const t = TRACKS[i];
-  audio.src = `/audio/${t.file}.m4a`;
-  pTitle.textContent = `${i+1}. ${t.title} — Tim and Ari`;
+  audio.src = t.src || `/audio/${t.file}.m4a`;
+  const artist = (ALBUM && ALBUM.artist) || "Tim and Ari";
+  pTitle.textContent = `${i+1}. ${t.title} — ${artist}`;
   tDur.textContent = fmt(t.dur);
   rows.forEach((r,j)=>{ r.classList.toggle("active", j===i); r.classList.remove("playing"); });
   player.classList.add("visible");
   if(autoplay) audio.play();
   if("mediaSession" in navigator){
     navigator.mediaSession.metadata = new MediaMetadata({
-      title:t.title, artist:"Tim and Ari (LoBo_301)", album:"Love Workshop",
-      artwork:[{src:"/cover.jpg", sizes:"1400x1400", type:"image/jpeg"}]
+      title:t.title, artist:artist + " (LoBo_301)", album:(ALBUM && ALBUM.title) || "Love Workshop",
+      artwork:[{src:(ALBUM && ALBUM.cover) || "/cover.jpg", sizes:"1400x1400", type:"image/jpeg"}]
     });
   }
 }
@@ -468,7 +477,7 @@ const playedOnce = new Set();
 audio.addEventListener("play", ()=>{
   if(current>=0 && !playedOnce.has(current)){
     playedOnce.add(current);
-    track("play", TRACKS[current].file);
+    track("play", TRACKS[current].slug || TRACKS[current].file);
   }
 });
 
@@ -476,9 +485,10 @@ audio.addEventListener("play", ()=>{
 const donateModal = document.getElementById("donateModal");
 const mYes = document.getElementById("mYes");
 function startDownload(){
+  const zip = (ALBUM && ALBUM.zip) || "/download/love-workshop.zip";
   const a = document.createElement("a");
-  a.href = "/download/love-workshop.zip";
-  a.download = "Love Workshop - Tim and Ari.zip";
+  a.href = zip;
+  a.download = `${(ALBUM && ALBUM.title) || "Love Workshop"} - ${(ALBUM && ALBUM.artist) || "Tim and Ari"}.zip`;
   document.body.appendChild(a); a.click(); a.remove();
 }
 document.getElementById("downloadBtn").addEventListener("click", e=>{
@@ -507,6 +517,51 @@ document.getElementById("mNo").addEventListener("click", ()=>{
 document.getElementById("mClose").addEventListener("click", ()=> donateModal.classList.remove("open"));
 donateModal.addEventListener("click", e=>{ if(e.target===donateModal) donateModal.classList.remove("open"); });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") donateModal.classList.remove("open"); });
+
+/* album config — the site shows whichever album is active in /manage */
+const LW_FALLBACK = {
+  id:"love-workshop", title:"Love Workshop", artist:"Tim and Ari", byline:"by Tim and Ari",
+  cover:"/cover.jpg", zip:"/download/love-workshop.zip",
+  coverCredit:"Album Cover Created by Mo Runda",
+  bio:document.getElementById("bioText").textContent,
+  credits:["OneTakeTimmy","Bomani X","Pat Dimitri","Popafidi","LoBo_301"],
+  tracks:TRACKS.map(t=>({title:t.title, sub:t.sub, slug:t.file, src:`/audio/${t.file}.m4a`, dur:t.dur})),
+};
+function applyAlbum(a){
+  ALBUM = a;
+  TRACKS = (a.tracks||[]).map(t=>({title:t.title, sub:t.sub, file:t.slug, slug:t.slug, dur:t.dur||0, src:t.src}));
+  document.title = `${a.title} — ${a.artist}`;
+  document.getElementById("albumTitle").textContent = a.title;
+  document.getElementById("bylineText").textContent = a.byline || ("by " + a.artist);
+  const cov = a.cover || "/cover.jpg";
+  document.getElementById("coverImg").src = cov;
+  document.getElementById("pArt").src = cov;
+  document.getElementById("mArt").src = cov;
+  const bioSec = document.querySelector(".bio");
+  if(a.bio){ bioSec.style.display=""; document.getElementById("bioText").textContent = a.bio; }
+  else bioSec.style.display="none";
+  const cr = document.getElementById("creditsRow");
+  cr.innerHTML = "";
+  (a.credits||[]).forEach(c=>{ const s=document.createElement("span"); s.className="credit"; s.textContent=c; cr.appendChild(s); });
+  cr.style.display = (a.credits||[]).length ? "" : "none";
+  const echoText = ((a.title+" "+a.artist).toUpperCase()+" ").repeat(2).trim();
+  document.querySelectorAll(".echo span").forEach(s=> s.textContent = echoText);
+  const dl = document.getElementById("downloadBtn");
+  if(a.zip){ dl.style.display=""; dl.href=a.zip; } else dl.style.display="none";
+  const foot = document.getElementById("footerText");
+  foot.textContent = "";
+  if(a.coverCredit){ foot.append(a.coverCredit, document.createElement("br")); }
+  foot.append(`${a.title} © 2026 ${a.artist} / LoBo_301 · All rights reserved`);
+  buildRows();
+}
+(async()=>{
+  let a = null;
+  try{
+    const r = await fetch("/api/album", {signal: AbortSignal.timeout(4000)});
+    if(r.ok) a = await r.json();
+  }catch(e){}
+  applyAlbum(a && Array.isArray(a.tracks) && a.tracks.length ? a : LW_FALLBACK);
+})();
 </script>
 <script>
 window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
