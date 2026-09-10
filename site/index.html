@@ -312,12 +312,11 @@
       <svg viewBox="0 0 24 24"><path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"/></svg>
     </button>
     <img class="m-art" src="/cover.jpg" alt="">
-    <h3 id="donateTitle">Years were put into this album.</h3>
+    <h3 id="donateTitle">Years, blood, sweat, and tears have been put into this album.</h3>
     <p>Would you like to donate to Tim and Ari before you download?</p>
     <div class="amounts" id="amounts">
-      <button class="amount" data-amt="3">$3</button>
       <button class="amount sel" data-amt="5">$5</button>
-      <button class="amount" data-amt="10">$10</button>
+      <button class="amount" data-amt="">Custom</button>
     </div>
     <a class="m-yes" id="mYes" href="https://cash.app/$lobo301/5" target="_blank" rel="noopener">Yes — Donate on Cash App</a>
     <button class="m-no" id="mNo">No thanks, just download</button>
@@ -471,7 +470,7 @@ document.getElementById("amounts").addEventListener("click", e=>{
   if(!b) return;
   document.querySelectorAll(".amount").forEach(x=>x.classList.remove("sel"));
   b.classList.add("sel");
-  mYes.href = "https://cash.app/$lobo301/" + b.dataset.amt;
+  mYes.href = b.dataset.amt ? "https://cash.app/$lobo301/" + b.dataset.amt : "https://cash.app/$lobo301";
 });
 mYes.addEventListener("click", ()=>{
   donateModal.classList.remove("open");
